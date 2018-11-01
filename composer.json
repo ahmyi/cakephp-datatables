@@ -1,5 +1,5 @@
 {
-    "name": "ahmyi/CakePHP-DataTables",
+    "name": "ahmyi/CakePHP-Datatables",
     "description": "DataTables plugin for CakePHP",
     "type": "cakephp-plugin",
     "license": "MIT",
