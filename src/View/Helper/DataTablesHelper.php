@@ -28,6 +28,7 @@ class DataTablesHelper extends Helper
     {
         parent::initialize($config);
         $this->getView()->Html->script($this->config('scripts'),['block'=>'script']);
+        $this->getView()->Html->css($this->config('css'),['block'=>'script']);
         
     }
 
