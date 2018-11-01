@@ -128,9 +128,11 @@ class DataTablesComponent extends Component
 		return $this->response->withType("application/json")->withStringBody(json_encode(compact('data','recordsFiltered','recordsTotal','search')));
     }
 
-    public function use($modelTable,$options = []){
+    public function use($modelName,$options = []){
         if(is_string($modelTable)){
             $modelTable = $this->getController()->loadModel($modelName);
+        }else{
+            $modelTable = $modelName;
         }
     	$fqn = explode("\\",get_class($modelTable));
     	$plugin = $fqn[0];
