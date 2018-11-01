@@ -1,5 +1,5 @@
 <?php
-namespace DataTables\Controller\Component;
+namespace Datatables\Controller\Component;
 
 use Cake\Controller\Component;
 use Cake\Controller\ComponentRegistry;
@@ -22,7 +22,7 @@ class DataTablesComponent extends Component
      */
 
     protected $_defaultConfig = [
-        'element'=>'DataTables.adminlte3'
+        'element'=>'Datatables.adminlte3'
     ];
     protected $_datatables = [];
     	//
