@@ -46,12 +46,14 @@ class DataTablesHelper extends Helper
         $columns = "[";
 
     	foreach($_fields as $i => $field){
-    		$fields.="<th>$field</th>";
+            $ucfield = ucwords($field);
+    		$fields.="<th>$ucfield</th>";
     		$columns.="{'data': '$field'},";
     	}
 
     	$actions = (isset($options['actions']));
-    	if($actions) $thFields.="<th>Actions</th>";
+
+
 
     	$columns = rtrim($columns,",");
     	$columns.="]";
@@ -60,6 +62,13 @@ class DataTablesHelper extends Helper
 
     	$script = "var dataTable$ModelName = $('#DT$ModelName').DataTable(";
         $script .="{'stateSave': true,'columns':$columns,'processing': true,'serverSide': true,'ajax':{ url :'$url', type: 'post',";
+
+        if($actions) {
+            $fields.="<th>Actions</th>";
+            $script.='"aoColumnDefs": [{"aTargets": ['.count($_fields).'],"mData": "Actions","mRender": function (data, type, full) { return "<button href="#"\' + \'id="\'+ data + \'">Edit</button>}}]';
+                
+        }
+
     	$script.=" error: function(){
             var dt = dataTable$ModelName;
             var modelName = '$ModelName';
