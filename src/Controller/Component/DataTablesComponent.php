@@ -129,7 +129,7 @@ class DataTablesComponent extends Component
     }
 
     public function use($modelName,$options = []){
-        if(is_string($modelTable)){
+        if(is_string($modelName)){
             $modelTable = $this->getController()->loadModel($modelName);
         }else{
             $modelTable = $modelName;
