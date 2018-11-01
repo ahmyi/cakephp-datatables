@@ -57,6 +57,8 @@ public function index(){
 
 ## Customizing
 
+### Templating
+
 If you want to customize the template from current at your controller define new element
 
 ```PHP
@@ -88,4 +90,19 @@ Your element should have 2 major variables $ModelName and $fields here is an exa
 	</div>
 </div>
 
+```
+
+### Use different js or css assets
+
+You can use differnt Css or Js as example below where it can be in string or array for multiple assets
+```PHP
+
+public function initialize(){
+        parent::initialize();
+
+        $this->loadComponent('Datatables.DataTables',[
+		'css'=>'your.css'
+		'js'=>'your.js'
+	]);
+}
 ```
