@@ -16,8 +16,21 @@ class DataTablesHelper extends Helper
      * @var array
      */
     protected $_defaultConfig = [
-        'element'=>'Datatable.adminlte3'
+        'element'=>'Datatable.adminlte3',
+        'scripts'=>[
+            "Datatables./js/jquery.dataTables.min.js",
+            "Datatables./js/dataTables.bootstrap.min.js"
+        ],
+        'css'=> "Datatables./css/dataTables.bootstrap.min.css"
     ];
+
+    public function initialize(array $config)
+    {
+        parent::initialize($config);
+        $this->getView()->Html->script($this->config('scripts'),['block'=>'script']);
+        
+    }
+
     protected $_scripts = [];
 
     public function render(string $model,$options = []){
@@ -45,15 +58,16 @@ class DataTablesHelper extends Helper
 
         $callback = $options['callback']??"";
 
-    	$script = "<script>var dataTable$ModelName = $('#DT$ModelName').DataTable(";
+    	$script = "var dataTable$ModelName = $('#DT$ModelName').DataTable(";
         $script .="{'stateSave': true,'columns':$columns,'processing': true,'serverSide': true,'ajax':{ url :'$url', type: 'post',";
     	$script.=" error: function(){
             var dt = dataTable$ModelName;
             var modelName = '$ModelName';
             ".$callback."
-        }}});</script>";
-		$this->getView()->append('script',$script);
-		return $this->getView()->element($this->config('element'),compact('headers','fields','ModelName'))
+        }}});";
+        
+		$this->getView()->Html->scriptBlock($script,['block'=>'script']);
+		return $this->getView()->element($this->config('element'),compact('header','fields','ModelName'));
 		
 
     }
