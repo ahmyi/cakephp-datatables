@@ -16,7 +16,7 @@ composer require ahmyi/cakephp-datatables
 ### config/bootstrap.php
 ```PHP
 
-Plugin::load('Ahmyi/Datatables');
+Plugin::load('Datatables');
 
 ```
 
