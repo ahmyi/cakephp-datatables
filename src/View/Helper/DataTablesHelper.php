@@ -36,7 +36,7 @@ class DataTablesHelper extends Helper
     public function render(string $model,$options = []){
     	$ModelName = str_replace(".", "", $model);
     	$header = str_replace(".", " ", $model);
-    	$url = $this->getView()->Url->build('/pages/index?dt='.$model);
+    	$url = $this->getView()->Url->build("?dt=$model");
     	if(!isset($this->config('databases')[$model])){
     		throw new \Exception("Invalid model in datatables. Please set one on controller");
     	}

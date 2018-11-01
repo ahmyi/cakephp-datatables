@@ -32,14 +32,6 @@ class DataTablesComponent extends Component
     ];
     protected $_datatables = [];
    
-    	
-    private function loadModel($model){
-    	if(!isset($this->_datatables[$model])){
-    		
-    	}
-    	return $this->_datatables[$model];
-    }
-
     public function process(){
     	if (!$this->request->isPost() || ($model = $this->request->getQuery('dt')) === false || !isset($this->_datatables[$model])){
     		if($this->request->isAjax()){
@@ -133,15 +125,17 @@ class DataTablesComponent extends Component
             $modelTable = $this->getController()->loadModel($modelName);
         }else{
             $modelTable = $modelName;
-        }
-    	$fqn = explode("\\",get_class($modelTable));
-    	$plugin = $fqn[0];
-    	$modelName = "";
-    	if($plugin !== "App"){
-    		$modelName = $plugin.".";
-    	}
+            $fqn = explode("\\",get_class($modelTable));
+            $plugin = $fqn[0];
+            $modelName = "";
 
-    	$modelName.=$modelTable->getRegistryAlias();
+            if($plugin !== "App"){
+                $modelName = $plugin.".";
+            }
+
+            $modelName.=$modelTable->getRegistryAlias();
+        
+        }
     	
     	$this->_datatables[$modelName] = new \stdClass();
 
@@ -155,7 +149,6 @@ class DataTablesComponent extends Component
     	
     	$this->_datatables[$modelName]->fields =$fields;
     	$this->_datatables[$modelName]->conditions =$options['conditions']??[];
-
 
     }
 
