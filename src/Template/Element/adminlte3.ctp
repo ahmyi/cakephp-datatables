@@ -1,6 +1,8 @@
 <div class='box box-theme'>
 	<div class='box-header'>
-		<h3><?=$header;?></h3>
+		<h3><?=$header;?>
+			<div class="pull-right"><a href='<?=$this->Url->build(['action'=>'add']);?>/>' class='btn btn-success'><i class="fa fa-plus"></i> New</a></div>
+		</h3>
 	</div>
 	<div class='box-body'>
 		<div class='col-sm-12'>
