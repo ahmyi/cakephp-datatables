@@ -7,7 +7,7 @@ You can install this plugin into your CakePHP application using [composer](http:
 The recommended way to install composer packages is:
 
 ```BASH
-composer require ahmyi/cakephp-datatables:master-dev
+composer require ahmyi/cakephp-datatables:dev-master
 ```
 
 
