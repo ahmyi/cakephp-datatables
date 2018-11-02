@@ -1,6 +1,6 @@
 <?php
 
-namespace Datatables\Controller\Component;
+namespace Ahmyi\DataTables\Controller\Component;
 
 use Cake\Controller\Component;
 use Cake\Controller\ComponentRegistry;
@@ -23,12 +23,12 @@ class DataTablesComponent extends Component
      */
 
     protected $_defaultConfig = [
-        'element'=>'Datatables.adminlte3',
+        'element'=>'Ahmyi/DataTables.adminlte3',
         'scripts'=>[
-            "Datatables./js/jquery.dataTables.min.js",
-            "Datatables./js/dataTables.bootstrap.min.js"
+            "Ahmyi/DataTables./js/jquery.dataTables.min.js",
+            "Ahmyi/DataTables./js/dataTables.bootstrap.min.js"
         ],
-        'css'=> "Datatables./css/dataTables.bootstrap.min.css"
+        'css'=> "Ahmyi/DataTables./css/dataTables.bootstrap.min.css"
     ];
     protected $_datatables = [];
    
@@ -154,7 +154,7 @@ class DataTablesComponent extends Component
 
     public function beforeRender(Event $event){
     	$this->getController()->viewBuilder()->helpers([
-            'Datatables.DataTables'=>[
+            'Ahmyi/DataTables.DataTables'=>[
                 'databases'=>$this->_datatables,
                 'element'=>$this->config('element'),
                 'scripts'=>$this->config('scripts'),

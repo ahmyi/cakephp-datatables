@@ -1,6 +1,6 @@
 <?php
 
-namespace DataTables;
+namespace Ahmyi\DataTables;
 
 use Cake\Core\BasePlugin;
 
@@ -9,4 +9,5 @@ use Cake\Core\BasePlugin;
  */
 class Plugin extends BasePlugin
 {
+	
 }

@@ -1,5 +1,5 @@
 <?php
-namespace Datatables\View\Helper;
+namespace Ahmyi\DataTables\View\Helper;
 
 use Cake\View\Helper;
 use Cake\View\View;
@@ -18,10 +18,10 @@ class DataTablesHelper extends Helper
     protected $_defaultConfig = [
         'element'=>'Datatable.adminlte3',
         'scripts'=>[
-            "Datatables./js/jquery.dataTables.min.js",
-            "Datatables./js/dataTables.bootstrap.min.js"
+            "Ahmyi/DataTables./js/jquery.dataTables.min.js",
+            "Ahmyi/DataTables./js/dataTables.bootstrap.min.js"
         ],
-        'css'=> "Datatables./css/dataTables.bootstrap.min.css"
+        'css'=> "Ahmyi/DataTables./css/dataTables.bootstrap.min.css"
     ];
 
     public function initialize(array $config)
@@ -66,7 +66,8 @@ class DataTablesHelper extends Helper
 
         if($actions) {
             $fields.="<th>Actions</th>";
-            $script.='"aoColumnDefs": [{"aTargets": ['.count($_fields).'],"mData": "Actions","mRender": function (data, type, full) { return "<button href="#"\' + \'id="\'+ data + \'">Edit</button>}}]';
+            $lastField = count($_fields)-1;
+            $script.='"aoColumnDefs": [{"aTargets": ['.$lastField.'],"mData": "id","mRender": function (data, type, full) { return "<td><button href=\"#\"  + id=\'"+ data + "\'>Edit</button></td>";}}],';
                 
         }
 

@@ -12,12 +12,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Datatables\\": "src/"
+            "Ahmyi\\DataTables\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Datatables\\Test\\": "tests/",
+            "Ahmyi\\DataTables\\Test\\": "tests/",
             "Cake\\Test\\": "vendor/cakephp/cakephp/tests/"
         }
     }

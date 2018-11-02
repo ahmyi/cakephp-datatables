@@ -7,7 +7,7 @@ You can install this plugin into your CakePHP application using [composer](http:
 The recommended way to install composer packages is:
 
 ```BASH
-composer require ahmyi/cakephp-datatables
+composer require ahmyi/cakephp-datatables:master-dev
 ```
 
 
@@ -16,7 +16,7 @@ composer require ahmyi/cakephp-datatables
 ### config/bootstrap.php
 ```PHP
 
-Plugin::load('Datatables');
+Plugin::load('Ahmyi/Datatables');
 
 ```
 
@@ -27,7 +27,7 @@ Plugin::load('Datatables');
 public function initialize(){
         parent::initialize();
 
-        $this->loadComponent('Datatables.DataTables');
+        $this->loadComponent('Ahmyi/Datatables.DataTables');
 }
 
 public function index(){
@@ -66,7 +66,7 @@ If you want to customize the template from current at your controller define new
 public function initialize(){
         parent::initialize();
 
-        $this->loadComponent('Datatables.DataTables',[
+        $this->loadComponent('Ahmyi/Datatables.DataTables',[
 		'element'=>'your_element'
 	]);
 }
@@ -100,7 +100,7 @@ You can use differnt Css or Js as example below where it can be in string or arr
 public function initialize(){
         parent::initialize();
 
-        $this->loadComponent('Datatables.DataTables',[
+        $this->loadComponent('Ahmyi/Datatables.DataTables',[
 		'css'=>'your.css'
 		'js'=>'your.js'
 	]);
