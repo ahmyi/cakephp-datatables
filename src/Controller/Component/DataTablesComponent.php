@@ -24,11 +24,13 @@ class DataTablesComponent extends Component
 
     protected $_defaultConfig = [
         'element'=>'Ahmyi/DataTables.adminlte3',
+        'actions'=>'Ahmyi/DataTables.actions',
         'scripts'=>[
             "Ahmyi/DataTables./js/jquery.dataTables.min.js",
             "Ahmyi/DataTables./js/dataTables.bootstrap.min.js"
         ],
-        'css'=> "Ahmyi/DataTables./css/dataTables.bootstrap.min.css"
+        'css'=> "Ahmyi/DataTables./css/dataTables.bootstrap.min.css",
+        'excludeFields'=>['is_deleted','created','modified']
     ];
     protected $_datatables = [];
    
@@ -55,12 +57,18 @@ class DataTablesComponent extends Component
     	if($search = $this->request->getData('search.value')){
     		$orWhere = [];
     		$search = strtolower($search);
-    		foreach($this->request->getData('columns') as $i=> $columns){
+    		foreach($this->request->getData('columns') as $i => $columns){
+                
+                $field = $columns['data'];
+
+                if(!in_array($field, $fields)){
+                    continue;
+                }
     			if($columns['searchable']){
     				if($search === 'null'){
     					$orWhere[] = $fields[$i]." IS NULL";
     				}else{
-	    				$orWhere["LOWER(".$fields[$i].") LIKE "] = "%$search%";
+	    				$orWhere["LOWER($field) LIKE "] = "%$search%";
 	    			}
     			}
     		}
@@ -120,6 +128,18 @@ class DataTablesComponent extends Component
 		return $this->response->withType("application/json")->withStringBody(json_encode(compact('data','recordsFiltered','recordsTotal','search')));
     }
 
+    private function _getFieldsForModel($model,$excludeFields = []){
+        $_fields = $model->schema()->columns();
+        $fields = [];
+        foreach($_fields as $field){
+            if(in_array($field, $excludeFields)){
+                continue;
+            }
+            $fields[]=$field;
+        }
+        return $fields;
+    }
+
     public function use($modelName,$options = []){
         if(is_string($modelName)){
             $modelTable = $this->getController()->loadModel($modelName);
@@ -136,19 +156,18 @@ class DataTablesComponent extends Component
             $modelName.=$modelTable->getRegistryAlias();
         
         }
+        $excludeFields = (isset($options['excludeFields']))?$options['excludeFields']:$this->config('excludeFields');
+        $options+=[
+            'fields'=>$this->_getFieldsForModel($modelTable,$excludeFields),
+            'conditions'=>[]
+        ];
     	
     	$this->_datatables[$modelName] = new \stdClass();
 
     	$this->_datatables[$modelName]->modelObject = $modelTable;
 
-    	if(!isset($options['fields'])){
-    		$fields = $modelTable->schema()->columns();
-    	}else{
-    		$fields = $options['fields'];
-    	}
-    	
-    	$this->_datatables[$modelName]->fields =$fields;
-    	$this->_datatables[$modelName]->conditions =$options['conditions']??[];
+    	$this->_datatables[$modelName]->fields =$options['fields'];
+    	$this->_datatables[$modelName]->conditions =$options['conditions'];
 
     }
 
