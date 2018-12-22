@@ -1,7 +1,11 @@
 <div class='box box-theme'>
 	<div class='box-header'>
 		<h3><?=$header;?>
-			<div class="pull-right"><a href='<?=$this->Url->build(['controller'=>$model,'action'=>'add']);?>' class='btn btn-success'><i class="fa fa-plus"></i> New</a></div>
+			<?php if($addButton === true)
+					printf("<div class='pull-right'><a href='%s' class='btn btn-success'><i class='fa fa-plus'></i> New </a></div>",$this->Url->build(['controller'=>$model,'action'=>'add']));
+				else if($addButton !== false) 
+					echo $addButton;?>
+				
 		</h3>
 	</div>
 	<div class='box-body'>

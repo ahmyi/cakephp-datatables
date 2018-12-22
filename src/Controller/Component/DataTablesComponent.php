@@ -13,7 +13,7 @@ use Cake\ORM\Query;
  */
 class DataTablesComponent extends Component
 {
-	    public $components = ['RequestHandler'];
+	    public $components = ['RequestHandler','Security'];
 
 
     /**
@@ -21,7 +21,9 @@ class DataTablesComponent extends Component
      *
      * @var array
      */
-
+    public function beforeFilter(Event $event){
+        if($this->request->is('ajax')) $this->Security->setConfig('unlockedActions', [$this->request->action]);
+    }
     protected $_defaultConfig = [
         'element'=>'Ahmyi/DataTables.adminlte3',
         'actions'=>'Ahmyi/DataTables.actions',
@@ -35,6 +37,7 @@ class DataTablesComponent extends Component
     protected $_datatables = [];
    
     public function process(){
+        
     	if (!$this->request->isPost() || ($model = $this->request->getQuery('dt')) === false || !isset($this->_datatables[$model])){
     		if($this->request->isAjax()){
     			debug($this->_datatables);
@@ -64,7 +67,7 @@ class DataTablesComponent extends Component
                 if(!in_array($field, $fields)){
                     continue;
                 }
-    			if($columns['searchable']){
+    			if($columns['searchable'] !== 'false'){
     				if($search === 'null'){
     					$orWhere[] = $fields[$i]." IS NULL";
     				}else{
@@ -72,7 +75,6 @@ class DataTablesComponent extends Component
 	    			}
     			}
     		}
-    		
     		$modelObject->where(['OR'=>$orWhere]);
     	}
 
@@ -153,8 +155,7 @@ class DataTablesComponent extends Component
                 $modelName = $plugin.".";
             }
 
-            $modelName.=$modelTable->getRegistryAlias();
-        
+            $modelName.=$modelTable->getRegistryAlias();            
         }
         $excludeFields = (isset($options['excludeFields']))?$options['excludeFields']:$this->config('excludeFields');
         $options+=[
@@ -168,7 +169,7 @@ class DataTablesComponent extends Component
 
     	$this->_datatables[$modelName]->fields =$options['fields'];
     	$this->_datatables[$modelName]->conditions =$options['conditions'];
-
+        return $this;
     }
 
     public function beforeRender(Event $event){

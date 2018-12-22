@@ -4,12 +4,13 @@ namespace Ahmyi\DataTables\View\Helper;
 use Cake\View\Helper;
 use Cake\View\View;
 use Cake\Utility\Inflector;
+use Cake\View\Helper\SecureFieldTokenTrait;
 /**
  * DataTables helper
  */
 class DataTablesHelper extends Helper
 {
-
+    use SecureFieldTokenTrait;
     /**
      * Default configuration.
      *
@@ -38,64 +39,115 @@ class DataTablesHelper extends Helper
     public function render(string $model,$options = []){
     	$options+=[
             'label'=>Inflector::humanize(Inflector::underscore($model),['.','_']),
-            'actions'=>true,
-            'callback'=>''
+            // 'actions'=>$this->config('actions'),
+            'callback'=>'',
+            'hide'=>[],
+            'fields'=>[],
+            'addButton'=>true,
+            'unsearchable'=>[],
+            'unorderable'=>[],
+            'render'=>[]
         ];
         
-
+        if(!isset($options['actions']) || $options['actions'] === true){
+            $options['actions'] = $this->config('actions');
+        }
         $header=$options['label'];
 
         $ModelName = str_replace(".", "", $model);
 
-    	$url = $this->getView()->Url->build("?dt=$model");
-
-        // list($model, $field) = pluginSplit($model);
-
+    	$url = $this->getView()->Url->build()."?dt=$model";
+        
     	if(!isset($this->config('databases')[$model])){
     		throw new \Exception("Invalid model in datatables. Please set one on controller");
     	}
 
     	$_fields = $this->config('databases')[$model]->fields;
 
+        
     	$fields = "";
-        $columns = "[";
-
+        $columns = "[".PHP_EOL;
+        $secure_fields = ['draw'];
+        $columnDefs = "[";
     	foreach($_fields as $i => $field){
-            $ucfield = Inflector::humanize($field,['.','_']);
-    		$fields.="<th>$ucfield</th>";
-            if(in_array($field,['created','modified'])){
-                $columns.="{'data': '$field','searchable':false,'render': function(data){return moment.unix(data).format('DD-MM-YYYY : HH:mm:ss')}},";
+            if(isset($options['fields'][$field])){
+                $ucfield = $options['fields'][$field];
             }else{
-                $columns.="{'data': '$field'},";
-            }    		
+                $ucfield = Inflector::humanize($field,['.','_']);
+            }
+
+    		$fields.="<th>$ucfield</th>";
+            $visible = (!in_array($field, $options['hide']))?'true':'false';
+            $searchable = (!in_array($field, $options['unsearchable']))?'true':'false';
+            $orderable = (!in_array($field, $options['unorderable']))?'true':'false';
+            if(in_array($field,['created','modified'])){
+                $columns.="                 {
+                    data: '$field',
+                    searchable:'$searchable',
+                    orderable:'$orderable',
+                    render: function(data){
+                        return moment.unix(data).format('DD-MM-YYYY : HH:mm:ss');
+                    }
+                },".PHP_EOL;
+            }else{
+                $columns.="                {
+                    data: '$field',
+                    searchable:$searchable,
+                    orderable:true,
+                    orderable:$orderable,
+                    name:'$ucfield',
+                    visible:$visible";
+                if(isset($options['render'][$field])){
+                    $columns.=",
+                    render: function(data){
+                        ".$options['render'][$field]."
+                    }";
+                }
+                $columns.="
+                },".PHP_EOL;
+            }    	
     	}
 
     	$actions = $options['actions'];
-        if($actions === true){
-
-        }
-
+        $columnDefs = rtrim($columnDefs,",");
+        $columnDefs.="]";
         if($actions) {
             $fields.="<th>Actions</th>";
-            $buttons = str_replace("[ID]","'+$('<div/>').text(data.id).html()+'",str_replace(PHP_EOL,"",str_replace("'", "\'",$this->getView()->element($this->config('actions')))));
-            $columns .="{data: null,'searchable': false,'orderable': false,className: 'text-center','render': function (data, type, full, meta){ return '$buttons';}},";
-            
+            $buttons = str_replace("[ID]","'+$('<div/>').text(data.id).html()+'",str_replace(PHP_EOL,"",str_replace("'", "\'",$this->getView()->element($options['actions']))));
+            $columns .="                {
+                    data: null,
+                    searchable: false,
+                    orderable: false,
+                    className: 'text-center',
+                    render: function (data, type, full, meta){ 
+                        return '$buttons';
+                    }
+                },";
         }
+        
         $columns = rtrim($columns,",");
-        $columns.="]";
-
-        $script = "var dataTable$ModelName = $('#DT$ModelName').DataTable(";
-        $script .="{'stateSave': true,'columns':$columns,'processing': true,'serverSide': true,'ajax':{ url :'$url', type: 'post',";
-
-    	$script.=" error: function(){
-            var dt = dataTable$ModelName;
-            var modelName = '$ModelName';
-            ".$options['callback']."
-        }}});";
+        $columns.=PHP_EOL."             ]";
+        $script ="
+        var dataTable$ModelName = $('#DT$ModelName').DataTable({
+            'stateSave': false,
+            'columns':$columns,
+            'processing': true,
+            'serverSide': true,
+            'data':{},
+            'deferRender': true,
+            'ajax':{ 
+                url :'$url', 
+                type: 'post',
+                error: function(){
+                    var dt = dataTable$ModelName;
+                    var modelName = '$ModelName';
+                    ".$options['callback']."
+                }
+            }
+        });";
         
 		$this->getView()->Html->scriptBlock($script,['block'=>'script']);
-		return $this->getView()->element($this->config('element'),compact('header','fields','ModelName','model'));
-		
-
+        $addButton = $options['addButton'];
+		return $this->getView()->element($this->config('element'),compact('addButton','header','fields','ModelName','model'));
     }
 }
