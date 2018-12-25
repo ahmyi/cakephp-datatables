@@ -12,8 +12,13 @@ composer require ahmyi/cakephp-datatables:dev-master
 
 
 ## Usage 
+### src/Application.php
+```PHP
 
-### config/bootstrap.php
+$this->addPlugin('Ahmyi/DataTables');
+
+```
+### config/bootstrap.php [prior 3.6]
 ```PHP
 
 Plugin::load('Ahmyi/DataTables');
